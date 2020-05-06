@@ -1,8 +1,7 @@
 {
   "author": "Jason Salzman",
-  "name": "react-add-to-calendar",
-  "description":
-    "A simple and reusable add to calendar button component for React",
+  "name": "@theankur/react-add-to-calendar",
+  "description": "A simple and reusable add to calendar button component for React",
   "version": "0.1.5",
   "license": "MIT",
   "homepage": "https://github.com/jasonsalzman/react-add-to-calendar",
@@ -15,7 +14,12 @@
   },
   "main": "dist/react-add-to-calendar.min.js",
   "style": "dist/react-add-to-calendar.min.css",
-  "files": ["*.md", "dist", "lib"],
+  "files": [
+    "*.md",
+    "*.d.ts",
+    "dist",
+    "lib"
+  ],
   "keywords": [
     "react",
     "add-to-calendar",
@@ -88,6 +92,7 @@
     "react": "^15.5.4 || ^16.0.0",
     "react-dom": "^15.5.4 || ^16.0.0"
   },
+  "types": "./index.d.ts",
   "optionalDependencies": {
     "moment": "^2.18.1"
   },
@@ -98,5 +103,8 @@
     "eslint": "eslint **/*.js",
     "prepublish": "npm run build",
     "codecov": "cat coverage/*/lcov.info | ./node_modules/codecov/bin/codecov"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

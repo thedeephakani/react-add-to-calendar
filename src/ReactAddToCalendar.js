@@ -20,7 +20,7 @@ export default class ReactAddToCalendar extends React.Component {
   componentWillMount() {
     // polyfill for startsWith to fix IE bug
     if (!String.prototype.startsWith) {
-      String.prototype.startsWith = function(searchString, position) {
+      String.prototype.startsWith = function (searchString, position) {
         position = position || 0;
         return this.indexOf(searchString, position) === position;
       };
@@ -38,7 +38,7 @@ export default class ReactAddToCalendar extends React.Component {
     this.setState({ isCrappyIE: isCrappyIE });
   }
 
-  toggleCalendarDropdown() {
+  toggleCalendarDropdown(event) {
     let showOptions = !this.state.optionsOpen;
 
     if (showOptions) {
@@ -46,7 +46,7 @@ export default class ReactAddToCalendar extends React.Component {
     } else {
       document.removeEventListener("click", this.toggleCalendarDropdown);
     }
-
+    if (!!this.props.toggleDropdown) this.props.toggleDropdown(showOptions, (event || {}).currentTarget)
     this.setState({ optionsOpen: showOptions });
   }
 
@@ -85,22 +85,31 @@ export default class ReactAddToCalendar extends React.Component {
 
   renderDropdown() {
     let self = this;
+    let ListElement = this.props.listElement || ((props) => <ul {...props}>{props.children}</ul>)
 
     let items = this.props.listItems.map(listItem => {
       let currentItem = Object.keys(listItem)[0];
       let currentLabel = listItem[currentItem];
+      let ListItemElement = this.props.listItemElement || ((props) => <li {...props}>{props.children}</li>)
 
       let icon = null;
       if (self.props.displayItemIcons) {
-        let currentIcon =
-          currentItem === "outlook" || currentItem === "outlookcom"
-            ? "windows"
-            : currentItem;
-        icon = <i className={"fa fa-" + currentIcon} />;
+        if (!!this.props.listItemsIcon) {
+          icon = this.props.listItemsIcon.filter(each => Object.keys(each)[0] === currentItem).shift()
+        }
+        if (!!icon) {
+          icon = icon[currentItem]
+        } else {
+          let currentIcon =
+            currentItem === "outlook" || currentItem === "outlookcom"
+              ? "windows"
+              : currentItem;
+          icon = <i className={"fa fa-" + currentIcon} />;
+        }
       }
 
       return (
-        <li key={helpers.getRandomKey()}>
+        <ListItemElement key={helpers.getRandomKey()}>
           <a
             className={currentItem + "-link"}
             onClick={self.handleDropdownLinkClick}
@@ -114,13 +123,13 @@ export default class ReactAddToCalendar extends React.Component {
             {icon}
             {currentLabel}
           </a>
-        </li>
+        </ListItemElement>
       );
     });
 
     return (
       <div className={this.props.dropdownClass}>
-        <ul>{items}</ul>
+        <ListElement>{items}</ListElement>
       </div>
     );
   }
@@ -129,6 +138,7 @@ export default class ReactAddToCalendar extends React.Component {
     let buttonLabel = this.props.buttonLabel;
     let buttonIcon = null;
     let template = Object.keys(this.props.buttonTemplate);
+    let ButtonElement = this.props.buttonElement || ((props) => <a {...props}>{props.children}</a>)
 
     if (template[0] !== "textOnly") {
       const iconPlacement = this.props.buttonTemplate[template];
@@ -153,11 +163,11 @@ export default class ReactAddToCalendar extends React.Component {
             {buttonIcon}
           </span>
         ) : (
-          <span>
-            {buttonIcon}
-            {" " + buttonLabel}
-          </span>
-        );
+            <span>
+              {buttonIcon}
+              {" " + buttonLabel}
+            </span>
+          );
     }
 
     let buttonClass = this.state.optionsOpen
@@ -166,9 +176,9 @@ export default class ReactAddToCalendar extends React.Component {
 
     return (
       <div className={this.props.buttonWrapperClass}>
-        <a className={buttonClass} onClick={this.toggleCalendarDropdown}>
+        <ButtonElement className={buttonClass} onClick={this.toggleCalendarDropdown}>
           {buttonLabel}
-        </a>
+        </ButtonElement>
       </div>
     );
   }
@@ -203,6 +213,7 @@ ReactAddToCalendar.propTypes = {
   buttonIconClass: PropTypes.string,
   useFontAwesomeIcons: PropTypes.bool,
   buttonWrapperClass: PropTypes.string,
+  buttonElement: PropTypes.element,
   displayItemIcons: PropTypes.bool,
   optionsOpen: PropTypes.bool,
   dropdownClass: PropTypes.string,
@@ -213,8 +224,12 @@ ReactAddToCalendar.propTypes = {
     startTime: PropTypes.string,
     endTime: PropTypes.string
   }).isRequired,
+  listElement: PropTypes.element,
+  listItemElement: PropTypes.element,
   listItems: PropTypes.arrayOf(PropTypes.object),
-  rootClass: PropTypes.string
+  listItemsIcon: PropTypes.arrayOf(PropTypes.object),
+  rootClass: PropTypes.string,
+  toggleDropdown: PropTypes.func
 };
 
 ReactAddToCalendar.defaultProps = {
