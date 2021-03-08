@@ -8,7 +8,11 @@ export default class Default extends React.Component {
       description: "This is the sample event provided as an example only",
       location: "Portland, OR",
       startTime: "2016-09-16T20:15:00-04:00",
-      endTime: "2016-09-16T21:45:00-04:00"
+      endTime: "2016-09-16T21:45:00-04:00",
+      recurring: {
+        repeat: 'weekly',
+        byDay: 'TU,WE'
+      }
     };
 
     return (

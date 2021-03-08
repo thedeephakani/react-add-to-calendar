@@ -1,8 +1,8 @@
 {
   "author": "Jason Salzman",
-  "name": "@theankur/react-add-to-calendar",
+  "name": "@thedeephakani/react-add-to-calendar",
   "description": "A simple and reusable add to calendar button component for React",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "license": "MIT",
   "homepage": "https://github.com/jasonsalzman/react-add-to-calendar",
   "repository": {
@@ -52,7 +52,6 @@
     "grunt": "1.0.1",
     "grunt-babel": "^6.0.0",
     "grunt-cli": "^1.2.0",
-    "grunt-contrib-sass": "1.0.0",
     "grunt-contrib-watch": "1.0.0",
     "grunt-eslint": "^19.0.0",
     "grunt-karma": "^2.0.0",
@@ -74,7 +73,7 @@
     "lodash": "^4.17.4",
     "mocha": "^3.4.1",
     "mocha-jsdom": "^1.1.0",
-    "node-sass": "^4.7.2",
+    "node-sass": "^4.14.1",
     "prop-types": "^15.5.10",
     "react": "^16.2.0",
     "react-docgen": "^2.15.0",
@@ -106,5 +105,9 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "grunt-contrib-sass": "^2.0.0",
+    "grunt-sass": "^3.1.0"
   }
 }

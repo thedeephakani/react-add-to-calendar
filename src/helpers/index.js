@@ -32,6 +32,27 @@ export default class helpers {
   buildUrl(event, type, isCrappyIE) {
     let calendarUrl = "";
 
+    const buildRecurringEvent = () => {
+      if (!event.recurring) return '';
+
+      if (typeof event.recurring === 'string') {
+        return event.recurring;
+      }
+
+      let recur = `RRULE:FREQ=${event.recurring.repeat};INTERVAL=${event.recurring.interval || 1};WKST=${event.recurring.weekStart || 'SU'}`;
+      if (event.recurring.count) {
+        recur = `${recur};COUNT=${event.recurring.count}`
+      }
+      if (event.recurring.byDay) {
+        recur = `${recur};BYDAY=${event.recurring.byDay}`
+      }
+      if (event.recurring.byMonth) {
+        recur = `${recur};BYMONTH=${event.recurring.byMonth}`
+      }
+
+      return recur.toUpperCase();
+    }
+
     // allow mobile browsers to open the gmail data URI within native calendar app
     // type = (type == "google" && this.isMobile()) ? "outlook" : type;
 
@@ -41,6 +62,9 @@ export default class helpers {
         calendarUrl += "?action=TEMPLATE";
         calendarUrl += "&dates=" + this.formatTime(event.startTime);
         calendarUrl += "/" + this.formatTime(event.endTime);
+        if (event.recurring) {
+          calendarUrl += "&recur=" + buildRecurringEvent();
+        }
         calendarUrl += "&location=" + encodeURIComponent(event.location);
         calendarUrl += "&text=" + encodeURIComponent(event.title);
         calendarUrl += "&details=" + encodeURIComponent(event.description);
@@ -79,10 +103,21 @@ export default class helpers {
           "DTEND:" + this.formatTime(event.endTime),
           "SUMMARY:" + event.title,
           "DESCRIPTION:" + event.description,
-          "LOCATION:" + event.location,
+          "LOCATION:" + event.location
+        ];
+
+        if (event.recurring) {
+          calendarUrl = calendarUrl.concat([
+            buildRecurringEvent()
+          ])
+        }
+
+        calendarUrl = calendarUrl.concat([
           "END:VEVENT",
           "END:VCALENDAR"
-        ].join("\n");
+        ])
+
+        calendarUrl = calendarUrl.join("\n")
 
         if (!isCrappyIE && this.isMobile()) {
           calendarUrl = encodeURI(
