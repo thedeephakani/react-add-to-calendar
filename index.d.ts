@@ -5,13 +5,23 @@
 // TypeScript Version: 2.8
 import * as React from "react";
 
-export interface Recurring {
+export interface GoogleRecurring {
   repeat: string;
   interval?: number;
   weekStart?: string;
   count?: number;
   byDay?: number | string;
   byMonth?: number | string;
+}
+
+export interface YahooRecurring {
+  repeat: string;
+}
+
+export interface Recurring {
+  google?: string | GoogleRecurring;
+  yahoo?: string | YahooRecurring;
+  until?: Date;
 }
 
 export interface AddToCalendarEvent {

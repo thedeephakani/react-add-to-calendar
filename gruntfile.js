@@ -22,19 +22,13 @@ module.exports = function (grunt) {
         files: {
           'dist/react-add-to-calendar.css': 'src/styles/ReactAddToCalendar.scss'
         },
-        options: {
-          sourcemap: 'none',
-          style: 'expanded'
-        }
+        
       },
       unmin: {
         files: {
           'dist/react-add-to-calendar.min.css': 'src/styles/ReactAddToCalendar.scss'
         },
-        options: {
-          sourcemap: 'none',
-          style: 'compressed'
-        }
+        
       }
     },
 

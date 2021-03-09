@@ -10,6 +10,9 @@ export default class helpers {
     let formattedDate = moment.utc(date).format("YYYYMMDDTHHmmssZ");
     return formattedDate.replace("+00:00", "Z");
   }
+  formatUntilDate(date) {
+    return moment.utc(date).format("YYYYMMDD");
+  }
 
   calculateDuration(startTime, endTime) {
     // snag parameters and format properly in UTC
@@ -25,7 +28,7 @@ export default class helpers {
     let duration = moment.duration(difference);
 
     return (
-      Math.floor(duration.asHours()) + moment.utc(difference).format(":mm")
+      String(Math.floor(duration.asHours())).padStart(2, "0") + moment.utc(difference).format("mm")
     );
   }
 
@@ -33,26 +36,37 @@ export default class helpers {
     let calendarUrl = "";
 
     const buildRecurringEvent = () => {
-      if (!event.recurring) return '';
+      if (!event.recurring.google) return '';
 
-      if (typeof event.recurring === 'string') {
-        return event.recurring;
+      if (typeof event.recurring.google === 'string') {
+        return event.recurring.google;
       }
-
-      let recur = `RRULE:FREQ=${event.recurring.repeat};INTERVAL=${event.recurring.interval || 1};WKST=${event.recurring.weekStart || 'SU'}`;
-      if (event.recurring.count) {
-        recur = `${recur};COUNT=${event.recurring.count}`
+      const googleRecurring = event.recurring.google;
+      let recur = `RRULE:FREQ=${googleRecurring.repeat};INTERVAL=${googleRecurring.interval || 1};WKST=${googleRecurring.weekStart || 'SU'}`;
+      if (googleRecurring.count) {
+        recur = `${recur};COUNT=${googleRecurring.count}`
       }
-      if (event.recurring.byDay) {
-        recur = `${recur};BYDAY=${event.recurring.byDay}`
+      if (event.recurring.until) {
+        recur = `${recur};UNTIL=${this.formatUntilDate(event.recurring.until)}`
       }
-      if (event.recurring.byMonth) {
-        recur = `${recur};BYMONTH=${event.recurring.byMonth}`
+      if (googleRecurring.byDay) {
+        recur = `${recur};BYDAY=${googleRecurring.byDay}`
+      }
+      if (googleRecurring.byMonth) {
+        recur = `${recur};BYMONTH=${googleRecurring.byMonth}`
       }
 
       return recur.toUpperCase();
     }
 
+    const buildYahooRecurringEvent= () => {
+      if (!event.recurring.yahoo) return '';
+      if (typeof event.recurring.yahoo === 'string') {
+        return event.recurring;
+      }
+      const recur = `&RPAT=${event.recurring.yahoo.repeat}&REND=${this.formatUntilDate(event.recurring.until)}`;
+      return recur;
+    }
     // allow mobile browsers to open the gmail data URI within native calendar app
     // type = (type == "google" && this.isMobile()) ? "outlook" : type;
 
@@ -62,7 +76,7 @@ export default class helpers {
         calendarUrl += "?action=TEMPLATE";
         calendarUrl += "&dates=" + this.formatTime(event.startTime);
         calendarUrl += "/" + this.formatTime(event.endTime);
-        if (event.recurring) {
+        if (event.recurring && event.recurring.google) {
           calendarUrl += "&recur=" + buildRecurringEvent();
         }
         calendarUrl += "&location=" + encodeURIComponent(event.location);
@@ -73,12 +87,15 @@ export default class helpers {
       case "yahoo":
         // yahoo doesn't utilize endTime so we need to calulate duration
         let duration = this.calculateDuration(event.startTime, event.endTime);
-        calendarUrl = "https://calendar.yahoo.com/?v=60&view=d&type=20";
-        calendarUrl += "&title=" + encodeURIComponent(event.title);
-        calendarUrl += "&st=" + this.formatTime(event.startTime);
-        calendarUrl += "&dur=" + duration;
-        calendarUrl += "&desc=" + encodeURIComponent(event.description);
+        calendarUrl = "https://calendar.yahoo.com/?v=60&view=d&TYPE=21";
+        calendarUrl += "&TITLE=" + encodeURIComponent(event.title);
+        calendarUrl += "&ST=" + this.formatTime(event.startTime);
+        calendarUrl += "&DUR=" + duration;
+        calendarUrl += "&DESC=" + encodeURIComponent(event.description);
         calendarUrl += "&in_loc=" + encodeURIComponent(event.location);
+        if (event.recurring && event.recurring.yahoo) {
+          calendarUrl += buildYahooRecurringEvent();
+        }
         break;
 
       case "outlookcom":

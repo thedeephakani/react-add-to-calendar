@@ -14,7 +14,7 @@ A simple, customizable, and reusable Add to Calendar button component for React 
 The package can be installed via NPM:
 
 ```
-npm install react-add-to-calendar --save
+npm install @thedeephakani/react-add-to-calendar --save
 ```
 
 You’ll need to install React and Moment separately since they are not included in the package. Below is a simple example on how to use the Add to Calendar button in a React view.
@@ -27,11 +27,21 @@ class Example extends React.Component {
   static displayName = 'Example';
   state = {
     event: {
-      title: 'Sample Event',
-      description: 'This is the sample event provided as an example only',
-      location: 'Portland, OR',
-      startTime: '2016-09-16T20:15:00-04:00',
-      endTime: '2016-09-16T21:45:00-04:00'
+      title: "Sample Event",
+      description: "This is the sample event provided as an example only",
+      location: "Portland, OR",
+      startTime: "2021-03-16T20:15:00-04:00",
+      endTime: "2021-03-16T21:45:00-04:00",
+      recurring: {
+        google: {
+          repeat: "weekly",
+          byDay: "TU,WE",
+        },
+        yahoo: {
+          repeat: "1WK",
+        },
+        until: "2022-10-10",
+      },
     }
   };
 

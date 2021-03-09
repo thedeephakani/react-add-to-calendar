@@ -7,43 +7,57 @@ export default class Default extends React.Component {
       title: "Sample Event",
       description: "This is the sample event provided as an example only",
       location: "Portland, OR",
-      startTime: "2016-09-16T20:15:00-04:00",
-      endTime: "2016-09-16T21:45:00-04:00",
+      startTime: "2021-03-16T20:15:00-04:00",
+      endTime: "2021-03-16T21:45:00-04:00",
       recurring: {
-        repeat: 'weekly',
-        byDay: 'TU,WE'
-      }
+        google: {
+          repeat: "weekly",
+          byDay: "TU,WE",
+        },
+        yahoo: {
+          repeat: "1WK",
+        },
+        until: "2022-10-10",
+      },
     };
 
     return (
       <div className="row">
         <pre className="column example__code">
           <code className="js">
-            {"let event = {"}<br />
+            {"let event = {"}
+            <br />
             &nbsp;&nbsp;&nbsp;
-            {"  title: 'Sample Event',"}<br />
+            {"  title: 'Sample Event',"}
+            <br />
             &nbsp;&nbsp;&nbsp;
             {
               "  description: 'This is the sample event provided as an example only',"
             }
             <br />
             &nbsp;&nbsp;&nbsp;
-            {"  location: 'Portland, OR',"}<br />
+            {"  location: 'Portland, OR',"}
+            <br />
             &nbsp;&nbsp;&nbsp;
-            {"  startTime: '2016-09-16T20:15:00-04:00',"}<br />
+            {"  startTime: '2016-09-16T20:15:00-04:00',"}
+            <br />
             &nbsp;&nbsp;&nbsp;
-            {"  endTime: '2016-09-16T21:45:00-04:00'"}<br />
-            {"};"}<br /><br />
-            {"/*"}<br />
+            {"  endTime: '2016-09-16T21:45:00-04:00'"}
+            <br />
+            {"};"}
+            <br />
+            <br />
+            {"/*"}
+            <br />
             &nbsp;&nbsp;&nbsp;
-            {"startTime and endTime can use any datetime"}<br />
+            {"startTime and endTime can use any datetime"}
+            <br />
             &nbsp;&nbsp;&nbsp;
-            {"string that is acceptable by MomentJS"}<br />
+            {"string that is acceptable by MomentJS"}
+            <br />
             {"*/"}
           </code>
-          <code className="jsx">
-            {"<AddToCalendar event={event} />"}
-          </code>
+          <code className="jsx">{"<AddToCalendar event={event} />"}</code>
         </pre>
         <div className="column">
           <AddToCalendar event={event} />
